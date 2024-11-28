@@ -14,7 +14,7 @@ export default function Transaction({ navigation }) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        'https://kami-backend-5rs0.onrender.com/transactions'
+        'http://localhost:3000/transactions'
       );
       console.log('Fetched data:', response.data);
       setData(response.data);

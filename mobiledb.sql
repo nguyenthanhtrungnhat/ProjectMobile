@@ -21,3 +21,30 @@ CREATE TABLE customer (
      totalSpent FLOAT,
     name VARCHAR(255) NOT NULL                -- customer name (change length as needed)
 );
+CREATE TABLE transaction (
+    id INT AUTO_INCREMENT PRIMARY KEY,        -- Unique transaction ID
+    customerId INT NOT NULL,                  -- Reference to the customer
+    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
+    updateAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- Update timestamp
+    FOREIGN KEY (customerId) REFERENCES customer(id) -- Foreign key to customer table
+);
+CREATE TABLE transaction_product (
+    transactionId INT NOT NULL,               -- Reference to the transaction
+    productId INT NOT NULL,                   -- Reference to the product
+    quantity INT NOT NULL DEFAULT 1,          -- Quantity of the product in the transaction
+    PRIMARY KEY (transactionId, productId),   -- Composite primary key
+    FOREIGN KEY (transactionId) REFERENCES transaction(id) ON DELETE CASCADE,
+    FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
+);
+
+
+INSERT INTO customer (name, phone)
+VALUES 
+    ('John Doe', '12313'),
+    ('Jane Smith', '131231312');
+
+INSERT INTO products (name, price)
+VALUES 
+    ('Laptop', 10),
+    ('Smartphone', 15),
+    ('Tablet', 20);
