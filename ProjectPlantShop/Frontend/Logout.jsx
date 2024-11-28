@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Alert, SafeAreaView, StyleSheet, TouchableOpacity,Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Logout({ navigation }) {
+export default function Logout({ onLogout }) {
 
   const logout = async () => {
     try {
@@ -13,7 +13,7 @@ export default function Logout({ navigation }) {
       Alert.alert('Success', 'You have logged out successfully.');
       
       // Navigate to the login screen
-      navigation.navigate('Login');
+      onLogout();
     } catch (error) {
       console.error('Error during logout:', error);
       Alert.alert('Error', 'Failed to log out. Please try again.');
@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 20,
-    backgroundColor: 'pink',
-    borderRadius: 20,
+    backgroundColor: 'green',
+    borderRadius: 10,
     margin: 20,
   },
   buttonText: {
