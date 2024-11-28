@@ -1,21 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import { Text, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
 export default function Transaction({ navigation }) {
   const [data, setData] = useState([]);
 
+  // Fetching data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/transactions'
-      );
+      const response = await axios.get('http://localhost:3000/transactions');
       console.log('Fetched data:', response.data);
       setData(response.data);
     } catch (error) {
@@ -31,35 +24,26 @@ export default function Transaction({ navigation }) {
     <TouchableOpacity
       style={styles.transaction}
       onPress={() => navigation.navigate('TransactionDetail', { item })}>
-      <Text style={styles.rowText}>
-        Customer Total Spend: ${item.customer.totalSpent}
-      </Text>
+      {/* Displaying transaction ID and formatted date */}
       <Text style={styles.serviceTitle}>
-        {item.id} - {new Date(item.customer.createdAt).toLocaleDateString()}
+        {item.transactionId} - {new Date(item.createAt).toLocaleDateString()}
       </Text>
-      {item.services.map((service, index) => (
-        <Text key={index} style={styles.rowText}>
-          - {service.name}
-        </Text>
-      ))}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <View style={styles.container}>
-        <View style={styles.firstRow}>
-          <Text style={styles.title}>Danh sách dịch vụ</Text>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('AddTransaction')}>
-            <Text style={styles.buttonText}>+</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.firstRow}>
+        <Text style={styles.title}>Danh sách </Text>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('AddTransaction')}>
+          <Text style={styles.buttonText}>+</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={data}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.transactionId.toString()} // Make sure to use transactionId as key
         renderItem={renderTransaction}
       />
     </View>
@@ -70,7 +54,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ecf0f1',
     padding: 10,
-   
   },
   button: {
     backgroundColor: 'pink',

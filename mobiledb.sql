@@ -36,15 +36,15 @@ CREATE TABLE transaction_product (
     FOREIGN KEY (transactionId) REFERENCES transaction(id) ON DELETE CASCADE,
     FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
+INSERT INTO transaction (id, customerId) VALUES
+    (1, 1),
+    (2, 2);
+    INSERT INTO transaction_product (transactionId, productId, quantity) VALUES
+    (1, 1, 1),
+    (1, 2, 2),
+    (2, 2, 1), 
+    (2, 3, 3); 
 
 
-INSERT INTO customer (name, phone)
-VALUES 
-    ('John Doe', '12313'),
-    ('Jane Smith', '131231312');
 
-INSERT INTO products (name, price)
-VALUES 
-    ('Laptop', 10),
-    ('Smartphone', 15),
-    ('Tablet', 20);
+
