@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Alert, SafeAreaView, StyleSheet, TouchableOpacity,Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Logout({ onLogout }) {
+export default function Logout({ onLogoutSuccess }) {
 
   const logout = async () => {
     try {
@@ -13,7 +13,7 @@ export default function Logout({ onLogout }) {
       Alert.alert('Success', 'You have logged out successfully.');
       
       // Navigate to the login screen
-      onLogout();
+      onLogoutSuccess();
     } catch (error) {
       console.error('Error during logout:', error);
       Alert.alert('Error', 'Failed to log out. Please try again.');
