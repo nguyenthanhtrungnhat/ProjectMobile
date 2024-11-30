@@ -45,6 +45,27 @@ INSERT INTO transaction (id, customerId) VALUES
     (2, 2, 1), 
     (2, 3, 3); 
 
+DELIMITER //
+
+CREATE TRIGGER update_total_spent
+AFTER INSERT ON transaction_product
+FOR EACH ROW
+BEGIN
+  UPDATE customer c
+  SET c.totalSpent = (
+    SELECT SUM(p.price * tp.quantity)
+    FROM transaction_product tp
+    JOIN products p ON tp.productId = p.id
+    JOIN transaction t ON tp.transactionId = t.id
+    WHERE t.customerId = c.id
+  )
+  WHERE c.id = (SELECT t.customerId FROM transaction t WHERE t.id = NEW.transactionId);
+END;
+
+//
+
+DELIMITER ;
+
 
 
 

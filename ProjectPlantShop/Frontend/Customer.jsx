@@ -5,7 +5,6 @@ import {
   View,
   FlatList,
   ScrollView,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
@@ -14,24 +13,20 @@ import axios from 'axios';
 
 export default function Customer({ navigation }) {
   const [data, setData] = useState([]);
+  const [error, setError] = useState(null); // Error state
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(
-        'http://localhost:3000/customer'
-      );
+      const response = await axios.get('http://localhost:3000/customer');
       console.log('Fetched data:', response.data);
       setData(response.data);
+      setError(null); // Clear any previous errors
     } catch (error) {
       setError('Failed to load data. Please try again later.');
       console.error('Error making GET request:', error);
-      if (error.response) {
-        console.error('Error response:', error.response);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      } else {
-        console.error('Error during request setup:', error.message);
-      }
+    } finally {
+      setIsLoading(false); // Stop loading indicator
     }
   };
 
@@ -39,15 +34,35 @@ export default function Customer({ navigation }) {
     fetchData();
   }, []);
 
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.centered}>
+        <ActivityIndicator size="large" color="green" />
+        <Text>Loading customers...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity style={styles.retryButton} onPress={fetchData}>
+          <Text style={styles.retryText}>Retry</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <ScrollView>
       <View style={styles.container}>
-
         <View style={styles.firstRow}>
-          <Text style={styles.title}>Danh sách </Text>
+          <Text style={styles.title}>Danh sách</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('AddCustomer')}>
+            onPress={() => navigation.navigate('AddCustomer')}
+          >
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
         </View>
@@ -60,9 +75,9 @@ export default function Customer({ navigation }) {
         }
         renderItem={({ item }) => (
           <View style={styles.border}>
-            <Text style={styles.title}>Customer name: {item.name}</Text>
-            <Text style={styles.title}>Phone: {item.phone}</Text>
-            <Text style={styles.title}>Total money: ${item.totalSpent}</Text>
+            <Text style={styles.rowTitle}>Customer Name: {item.name}</Text>
+            <Text style={styles.rowText}>Phone: {item.phone}</Text>
+            <Text style={styles.rowText}>Total Money: ${item.totalSpent}</Text>
           </View>
         )}
       />
@@ -72,7 +87,6 @@ export default function Customer({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { backgroundColor: '#ecf0f1', padding: 8 },
-  logo: { width: '100%' },
   button: {
     backgroundColor: 'green',
     borderRadius: 50,
@@ -95,9 +109,29 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     margin: 10,
     padding: 10,
+    backgroundColor: '#fff',
   },
-  title: {
+  rowTitle: { fontWeight: 'bold', fontSize: 16 },
+  rowText: { fontSize: 14, marginTop: 5 },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  retryButton: {
+    padding: 10,
+    backgroundColor: 'green',
+    borderRadius: 10,
+  },
+  retryText: {
+    color: 'white',
     fontWeight: 'bold',
-
+    textAlign: 'center',
   },
 });

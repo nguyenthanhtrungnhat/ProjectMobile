@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
 
 export default function Transaction({ navigation }) {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetching data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/transactions');
-      console.log('Fetched data:', response.data);
+      const response = await axios.get('http://localhost:3000/transactions'); // Replace with server IP
       setData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
+      Alert.alert('Error', 'Failed to load transactions.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -23,27 +25,39 @@ export default function Transaction({ navigation }) {
   const renderTransaction = ({ item }) => (
     <TouchableOpacity
       style={styles.transaction}
-      onPress={() => navigation.navigate('TransactionDetail', { item })}>
-      {/* Displaying transaction ID and formatted date */}
-      <Text style={styles.serviceTitle}>
+      onPress={() => navigation.navigate('TransactionDetail', { item })}
+    >
+      <Text style={styles.transactionText}>
         {item.transactionId} - {new Date(item.createAt).toLocaleDateString()}
       </Text>
+      <Text style={styles.transactionSubText}>Customer: {item.customerName}</Text>
+      <Text style={styles.transactionSubText}>Products: {item.productNames}</Text>
+      <Text style={styles.transactionSubText}>Quantities: {item.quantities}</Text>
     </TouchableOpacity>
   );
 
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.firstRow}>
-        <Text style={styles.title}>Danh sách </Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Transaction List</Text>
         <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('AddTransaction')}>
-          <Text style={styles.buttonText}>+</Text>
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddTransaction')}
+        >
+          <Text style={styles.addButtonText}>+</Text>
         </TouchableOpacity>
       </View>
       <FlatList
         data={data}
-        keyExtractor={(item) => item.transactionId.toString()} // Make sure to use transactionId as key
+        keyExtractor={(item) => item.transactionId.toString()}
         renderItem={renderTransaction}
       />
     </View>
@@ -52,40 +66,55 @@ export default function Transaction({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#ecf0f1',
+    flex: 1,
+    backgroundColor: '#f8f9fa',
     padding: 10,
   },
-  button: {
-    backgroundColor: 'pink',
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  addButton: {
+    backgroundColor: 'green',
     borderRadius: 50,
     height: 35,
     width: 35,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  title: { fontWeight: 'bold', marginLeft: 10, marginTop: 10, fontSize: 18 },
-  firstRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    width: '100%',
-    padding: 10,
+  addButtonText: {
+    color: 'white', fontWeight: 'bold', textAlign: 'center'
   },
   transaction: {
     padding: 15,
     marginBottom: 10,
-    borderWidth: 1,
-    borderRadius: 10,
-    backgroundColor: '#fff',
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  serviceTitle: {
+  transactionText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 10,
+    color: '#333',
   },
-  rowText: {
-    fontSize: 16,
-    marginVertical: 2,
+  transactionSubText: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 5,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

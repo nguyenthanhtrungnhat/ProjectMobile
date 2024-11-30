@@ -42,8 +42,8 @@ export default function Home({ navigation }) {
   }, []);
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View >
 
         <View style={styles.firstRow}>
           <Text style={styles.title}>Danh sách </Text>
@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
               style={styles.row}
               onPress={() => navigation.navigate('ProductDetail', { item })}>
               <Text style={styles.rowText}>{item.name}</Text>
-              <Text>${item.price}</Text>
+              <Text style={styles.SubText}>${item.price}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -78,7 +78,7 @@ export default function Home({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#ecf0f1', padding: 8 },
+  container: { backgroundColor: '#f8f9fa', padding: 8 },
   logo: { width: '100%' },
   button: {
     backgroundColor: 'green',
@@ -89,7 +89,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  title: { fontWeight: 'bold', marginLeft: 10, marginTop: 10, fontSize: 18 },
+  title: {  fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',},
   firstRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -98,14 +100,23 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   row: {
-    padding: 20,
-    borderWidth: 1,
-    borderRadius: 20,
-    margin: 10,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
-  rowText: { fontWeight: 'bold', fontSize: 16 },
-
+  rowText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  SubText: {
+    fontSize: 14,
+    color: '#555',
+    marginTop: 5,
+  },
 });

@@ -216,23 +216,25 @@ app.put('/products/:id', (req, res) => {
 app.get('/transactions', (req, res) => {
     const query = `
         SELECT 
-            t.id AS transactionId,
-            t.createAt,
-            t.updateAt,
-            c.name AS customerName,
-            p.name AS productName,
-            p.price AS productPrice,
-            tp.quantity
-        FROM 
-            transaction t
-        INNER JOIN 
-            customer c ON t.customerId = c.id
-        INNER JOIN 
-            transaction_product tp ON t.id = tp.transactionId
-        INNER JOIN 
-            products p ON tp.productId = p.id
-        ORDER BY 
-            t.createAt DESC;
+    t.id AS transactionId,
+    t.createAt,
+    t.updateAt,
+    c.name AS customerName,
+    GROUP_CONCAT(p.name SEPARATOR ', ') AS productNames, -- Combine product names
+    GROUP_CONCAT(tp.quantity SEPARATOR ', ') AS quantities -- Combine quantities
+FROM 
+    transaction t
+INNER JOIN 
+    customer c ON t.customerId = c.id
+INNER JOIN 
+    transaction_product tp ON t.id = tp.transactionId
+INNER JOIN 
+    products p ON tp.productId = p.id
+GROUP BY 
+    t.id
+ORDER BY 
+    t.createAt DESC;
+
     `;
 
     db.query(query, (err, results) => {
