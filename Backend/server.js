@@ -246,7 +246,6 @@ ORDER BY
     });
 });
 
-
 // Endpoint to get a transaction by ID
 app.get('/transactions/:id', (req, res) => {
     const transactionId = req.params.id;

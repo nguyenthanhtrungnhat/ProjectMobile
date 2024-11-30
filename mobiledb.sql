@@ -36,14 +36,6 @@ CREATE TABLE transaction_product (
     FOREIGN KEY (transactionId) REFERENCES transaction(id) ON DELETE CASCADE,
     FOREIGN KEY (productId) REFERENCES products(id) ON DELETE CASCADE
 );
-INSERT INTO transaction (id, customerId) VALUES
-    (1, 1),
-    (2, 2);
-    INSERT INTO transaction_product (transactionId, productId, quantity) VALUES
-    (1, 1, 1),
-    (1, 2, 2),
-    (2, 2, 1), 
-    (2, 3, 3); 
 
 DELIMITER //
 
@@ -66,6 +58,14 @@ END;
 
 DELIMITER ;
 
+INSERT INTO transaction (id, customerId) VALUES
+    (1, 1),
+    (2, 2);
+INSERT INTO transaction_product (transactionId, productId, quantity) VALUES
+    (1, 1, 1),
+    (1, 2, 2),
+    (2, 2, 1), 
+    (2, 3, 3); 
 
 
 
