@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'https://kami-backend-5rs0.onrender.com/transactions';
+const API_URL = 'http://localhost:3000/transactions';
 
 export default function AddTransaction({ navigation }) {
   const [customerName, setCustomerName] = useState(''); // Default to empty string

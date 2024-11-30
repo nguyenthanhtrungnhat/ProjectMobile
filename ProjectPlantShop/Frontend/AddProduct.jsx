@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://26.184.100.176:3000/products';
+const API_URL = 'http://localhost:3000/products';
 
 export default function AddProduct() {
   

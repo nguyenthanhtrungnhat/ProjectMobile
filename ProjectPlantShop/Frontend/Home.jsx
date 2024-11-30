@@ -20,7 +20,7 @@ export default function Home({ navigation }) {
     try {
 
       const response = await axios.get(
-        'http://26.184.100.176:3000/products'
+        'http://localhost:3000/products'
       );
       console.log('Fetched data:', response.data);
       setData(response.data);

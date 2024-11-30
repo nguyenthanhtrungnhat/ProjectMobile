@@ -11,7 +11,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Correct API URL with dynamic item.id
-const API_URL = 'http://26.184.100.176:3000/products';
+const API_URL = 'http://localhost:3000/products';
 
 export default function Edit({ route, navigation }) {
   const { item } = route.params; // Item data passed from the previous screen

@@ -8,7 +8,7 @@ export default function Transaction({ navigation }) {
   // Fetching data from the server
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://26.184.100.176:3000/transactions');
+      const response = await axios.get('http://localhost:3000/transactions');
       console.log('Fetched data:', response.data);
       setData(response.data);
     } catch (error) {
