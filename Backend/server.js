@@ -274,55 +274,6 @@ app.get('/transactions/:id', (req, res) => {
     });
 });
 
-// //Endpoint to add new transaction
-// app.post('/transactions', (req, res) => {
-//     const { customerId, products } = req.body;
-
-//     // Validate input
-//     if (!customerId || !Array.isArray(products) || products.length === 0) {
-//         return res.status(400).json({ error: 'Invalid input. Please provide customerId and products.' });
-//     }
-
-//     // Start a transaction in MySQL
-//     db.beginTransaction((err) => {
-//         if (err) {
-//             return res.status(500).json({ error: 'Failed to start transaction.' });
-//         }
-
-//         // Step 1: Insert into `transaction` table
-//         const transactionQuery = 'INSERT INTO transaction (customerId) VALUES (?)';
-//         db.query(transactionQuery, [customerId], (err, transactionResult) => {
-//             if (err) {
-//                 db.rollback(() => res.status(500).json({ error: 'Failed to create transaction.' }));
-//                 return;
-//             }
-
-//             const transactionId = transactionResult.insertId;
-
-//             // Step 2: Insert into `transaction_product` table
-//             const productValues = products.map((product) => [transactionId, product.productId, product.quantity]);
-//             const productQuery = 'INSERT INTO transaction_product (transactionId, productId, quantity) VALUES ?';
-
-//             db.query(productQuery, [productValues], (err) => {
-//                 if (err) {
-//                     db.rollback(() => res.status(500).json({ error: 'Failed to add products to transaction.' }));
-//                     return;
-//                 }
-
-//                 // Commit the transaction
-//                 db.commit((err) => {
-//                     if (err) {
-//                         db.rollback(() => res.status(500).json({ error: 'Failed to commit transaction.' }));
-//                         return;
-//                     }
-
-//                     res.status(201).json({ message: 'Transaction created successfully.', transactionId });
-//                 });
-//             });
-//         });
-//     });
-// });
-
 // Start the server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
