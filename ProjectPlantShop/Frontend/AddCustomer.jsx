@@ -69,7 +69,7 @@ export default function AddCustomer({ navigation }) {
         value={customerName}
         onChangeText={setCustomerName}
       />
-      <Text style={styles.title}> Price *</Text>
+      <Text style={styles.title}> Phone *</Text>
       <TextInput
         placeholder="Input phone"
         style={styles.inputField}

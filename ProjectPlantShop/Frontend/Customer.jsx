@@ -55,10 +55,10 @@ export default function Customer({ navigation }) {
   }
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <View >
         <View style={styles.firstRow}>
-          <Text style={styles.title}>Danh sách</Text>
+          <Text style={styles.title}>Customer List</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('AddCustomer')}
@@ -86,7 +86,11 @@ export default function Customer({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#ecf0f1', padding: 8 },
+  container: {
+    flex: 1,
+    backgroundColor: '#f8f9fa',
+    padding: 10,
+  },
   button: {
     backgroundColor: 'green',
     borderRadius: 50,
@@ -96,20 +100,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  title: { fontWeight: 'bold', marginLeft: 10, marginTop: 10, fontSize: 18 },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   firstRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    width: '100%',
-    padding: 10,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   border: {
-    borderWidth: 1,
-    borderRadius: 10,
-    margin: 10,
-    padding: 10,
-    backgroundColor: '#fff',
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   rowTitle: { fontWeight: 'bold', fontSize: 16 },
   rowText: { fontSize: 14, marginTop: 5 },

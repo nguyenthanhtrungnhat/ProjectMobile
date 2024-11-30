@@ -46,7 +46,7 @@ export default function Home({ navigation }) {
       <View >
 
         <View style={styles.firstRow}>
-          <Text style={styles.title}>Danh sách </Text>
+          <Text style={styles.title}>Product List </Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('AddProduct')}>
@@ -89,15 +89,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
-  title: {  fontSize: 20,
+  title: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',},
+    color: '#333',
+  },
   firstRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    width: '100%',
-    padding: 10,
+    alignItems: 'center',
+    marginBottom: 10,
   },
   row: {
     padding: 15,

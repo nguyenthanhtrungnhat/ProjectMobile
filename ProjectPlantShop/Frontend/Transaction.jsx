@@ -28,7 +28,7 @@ export default function Transaction({ navigation }) {
       onPress={() => navigation.navigate('TransactionDetail', { item })}
     >
       <Text style={styles.transactionText}>
-        {item.transactionId} - {new Date(item.createAt).toLocaleDateString()}
+       Bill code: {item.transactionId} - Create at: {new Date(item.createAt).toLocaleDateString()}
       </Text>
       <Text style={styles.transactionSubText}>Customer: {item.customerName}</Text>
       <Text style={styles.transactionSubText}>Products: {item.productNames}</Text>
