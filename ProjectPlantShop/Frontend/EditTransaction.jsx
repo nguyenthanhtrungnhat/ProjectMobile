@@ -11,7 +11,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Correct API URL with dynamic item.id
-const API_URL = 'https://kami-backend-5rs0.onrender.com/transactions';
+const API_URL = 'http://26.184.100.176:3000/transactions';
 
 export default function EditTransaction({ route, navigation }) {
   const { item } = route.params; // Item data passed from the previous screen

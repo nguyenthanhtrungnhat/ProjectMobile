@@ -18,7 +18,7 @@ export default function Customer({ navigation }) {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:3000/customer'
+        'http://26.184.100.176:3000/customer'
       );
       console.log('Fetched data:', response.data);
       setData(response.data);

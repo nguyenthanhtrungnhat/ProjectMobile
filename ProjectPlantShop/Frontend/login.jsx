@@ -10,7 +10,7 @@ import {
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = 'http://localhost:3000/auth';
+const API_URL = 'http://26.184.100.176:3000/auth';
 
 
 export default function Login({onLoginSuccess}) {
