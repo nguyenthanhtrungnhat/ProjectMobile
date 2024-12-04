@@ -19,6 +19,7 @@ export default function Customer({ navigation }) {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:3000/customer');
+
       console.log('Fetched data:', response.data);
       setData(response.data);
       setError(null); // Clear any previous errors

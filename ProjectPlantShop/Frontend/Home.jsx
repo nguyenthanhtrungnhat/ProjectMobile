@@ -1,4 +1,3 @@
-
 import {
   Text,
   SafeAreaView,
@@ -15,25 +14,20 @@ import axios from 'axios';
 
 export default function Home({ navigation }) {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchData = async () => {
     try {
-
-      const response = await axios.get(
-        'http://localhost:3000/products'
-      );
+      const response = await axios.get('http://localhost:3000/products');
+ 
       console.log('Fetched data:', response.data);
       setData(response.data);
+      setLoading(false);
     } catch (error) {
       setError('Failed to load data. Please try again later.');
+      setLoading(false);
       console.error('Error making GET request:', error);
-      if (error.response) {
-        console.error('Error response:', error.response);
-      } else if (error.request) {
-        console.error('No response received:', error.request);
-      } else {
-        console.error('Error during request setup:', error.message);
-      }
     }
   };
 
@@ -41,12 +35,27 @@ export default function Home({ navigation }) {
     fetchData();
   }, []);
 
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <ActivityIndicator size="large" color="green" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.errorText}>{error}</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <ScrollView style={styles.container}>
-      <View >
-
+      <View>
         <View style={styles.firstRow}>
-          <Text style={styles.title}>Product List </Text>
+          <Text style={styles.title}>Product List</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => navigation.navigate('AddProduct')}>
@@ -55,31 +64,34 @@ export default function Home({ navigation }) {
         </View>
       </View>
 
-
       <FlatList
         data={data}
-        keyExtractor={(item) =>
-          item.id ? item.id.toString() : Math.random().toString()
-        }
+        keyExtractor={(item) => item.id ? item.id.toString() : Math.random().toString()}
         renderItem={({ item }) => (
           <View>
             <TouchableOpacity
               style={styles.row}
               onPress={() => navigation.navigate('ProductDetail', { item })}>
+              
+              {/* Display product image if available */}
+              {item.imageUrl ? (
+                <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+              ) : (
+                <View style={styles.noImage}><Text>No Image</Text></View>
+              )}
+
               <Text style={styles.rowText}>{item.name}</Text>
               <Text style={styles.SubText}>${item.price}</Text>
             </TouchableOpacity>
           </View>
         )}
       />
-
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { backgroundColor: '#f8f9fa', padding: 8 },
-  logo: { width: '100%' },
   button: {
     backgroundColor: 'green',
     borderRadius: 50,
@@ -119,5 +131,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     marginTop: 5,
+  },
+  productImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  noImage: {
+    width: 100,
+    height: 100,
+    backgroundColor: '#e0e0e0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

@@ -17,6 +17,7 @@ export default function AddProduct() {
   
   const [serviceName, setServiceName] = useState('');
   const [price, setPrice] = useState('');
+  const [imageUrl, setImageUrl] = useState('');  // New state for imageUrl
   const [authToken, setAuthToken] = useState('');
 
   // Fetch token from AsyncStorage when component mounts
@@ -28,7 +29,6 @@ export default function AddProduct() {
           setAuthToken(token);
         } else {
           Alert.alert('Authentication Error', 'No authentication token found.');
-         
         }
       } catch (error) {
         console.error('Error fetching auth token:', error);
@@ -42,6 +42,7 @@ export default function AddProduct() {
       const newData = {
         name: serviceName,
         price: price,
+        imageUrl: imageUrl,  // Include imageUrl in the data sent to the backend
       };
 
       const response = await axios.post(API_URL, newData, {
@@ -54,22 +55,24 @@ export default function AddProduct() {
       
       setServiceName('');
       setPrice('');
+      setImageUrl('');  // Clear the imageUrl after submission
+      Alert.alert('Success', 'Product added successfully!');
     } catch (error) {
       console.error('Error posting data:', error);
-      Alert.alert('Error', 'Could not add service. Please try again.');
+      Alert.alert('Error', 'Could not add product. Please try again.');
     }
   };
 
   return (
-    <View>
-      <Text style={styles.title}> Product name *</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Product name *</Text>
       <TextInput
         placeholder="Input a product name"
         style={styles.inputField}
         value={serviceName}
         onChangeText={setServiceName}
       />
-      <Text style={styles.title}> Price *</Text>
+      <Text style={styles.title}>Price *</Text>
       <TextInput
         placeholder="Input a product price"
         style={styles.inputField}
@@ -77,14 +80,25 @@ export default function AddProduct() {
         value={price}
         onChangeText={setPrice}
       />
+      <Text style={styles.title}>Image URL</Text>
+      <TextInput
+        placeholder="Input an image URL (optional)"
+        style={styles.inputField}
+        value={imageUrl}
+        onChangeText={setImageUrl}
+      />
       <TouchableOpacity style={styles.button} onPress={postData}>
-        <Text style={styles.buttonText}> Add</Text>
+        <Text style={styles.buttonText}>Add</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
   inputField: {
     margin: 20,
     padding: 20,

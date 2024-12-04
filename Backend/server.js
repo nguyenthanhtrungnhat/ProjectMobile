@@ -131,23 +131,27 @@ app.get('/products/:id', (req, res) => {
         }
 
         // Send the query result (product) as JSON response
-        res.json(results[0]);
+        res.json(results[0]);  // This will include the imageUrl field as well
     });
 });
-// Endpoint to add a product with only name and price
-app.post('/products', (req, res) => {
-    const { name, price } = req.body;  // Capture the name and price from the request body
 
-    // Validate the data
+// Endpoint to add a product with name, price, and imageUrl (optional)
+app.post('/products', (req, res) => {
+    const { name, price, imageUrl } = req.body;  // Capture name, price, and imageUrl from the request body
+
+    // Validate the required fields (name and price)
     if (!name || !price) {
         return res.status(400).send('Both name and price are required');
     }
 
+    // If imageUrl is not provided, set it to NULL
+    const productImageUrl = imageUrl || null;
+
     // SQL query to insert a new product
-    const sql = 'INSERT INTO products (name, price) VALUES (?, ?)';
+    const sql = 'INSERT INTO products (name, price, imageUrl) VALUES (?, ?, ?)';
 
     // Execute the SQL query
-    db.query(sql, [name, price], (err, result) => {
+    db.query(sql, [name, price, productImageUrl], (err, result) => {
         if (err) {
             console.error('Error executing query: ', err);
             res.status(500).send('Error adding product');
@@ -158,6 +162,7 @@ app.post('/products', (req, res) => {
         res.status(201).send({ message: 'Product added successfully', productId: result.insertId });
     });
 });
+
 // Endpoint to add a customer with only name and phone
 app.post('/customer', (req, res) => {
     const { name, phone } = req.body;  // Capture the name and phone from the request body
@@ -182,21 +187,21 @@ app.post('/customer', (req, res) => {
         res.status(201).send({ message: 'Customer added successfully', customerId: result.insertId });
     });
 });
-// Endpoint to edit a product's name and price by id
+// Endpoint to edit a product's name, price, and imageUrl by id
 app.put('/products/:id', (req, res) => {
     const productId = req.params.id;  // Capture the product id from the URL
-    const { name, price } = req.body;  // Capture the new name and price from the request body
+    const { name, price, imageUrl } = req.body;  // Capture the new name, price, and imageUrl from the request body
 
     // Validate the data
     if (!name || !price) {
         return res.status(400).send('Both name and price are required');
     }
 
-    // SQL query to update the product details
-    const sql = 'UPDATE products SET name = ?, price = ? WHERE id = ?';
+    // Prepare SQL query to update the product details
+    const sql = 'UPDATE products SET name = ?, price = ?, imageUrl = ? WHERE id = ?';
 
     // Execute the SQL query
-    db.query(sql, [name, price, productId], (err, result) => {
+    db.query(sql, [name, price, imageUrl, productId], (err, result) => {
         if (err) {
             console.error('Error executing query: ', err);
             res.status(500).send('Error updating product');
@@ -212,6 +217,7 @@ app.put('/products/:id', (req, res) => {
         res.status(200).send({ message: 'Product updated successfully' });
     });
 });
+
 // Endpoint to get all transactions
 app.get('/transactions', (req, res) => {
     const query = `

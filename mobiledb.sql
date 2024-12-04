@@ -66,6 +66,9 @@ INSERT INTO transaction_product (transactionId, productId, quantity) VALUES
     (1, 2, 2),
     (2, 2, 1), 
     (2, 3, 3); 
+    ALTER TABLE PRODUCTS
+ADD COLUMN imageUrl VARCHAR(500) DEFAULT NULL;
+
 
 
 

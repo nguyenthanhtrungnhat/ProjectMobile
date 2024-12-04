@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // Correct API URL with dynamic item.id
 const API_URL = 'http://localhost:3000/transactions';
 
+
 export default function EditTransaction({ route, navigation }) {
   const { item } = route.params; // Item data passed from the previous screen
   const [customerName, setCustomerName] = useState(item.customer.name);
