@@ -1,3 +1,4 @@
+import React from "react";
 import {
   Text,
   SafeAreaView,
@@ -7,9 +8,10 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-} from 'react-native';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+} from "react-native";
+import { useState, useEffect } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import axios from "axios";
 
 export default function Customer({ navigation }) {
   const [data, setData] = useState([]);
@@ -18,22 +20,26 @@ export default function Customer({ navigation }) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/customer');
+      setIsLoading(true);
+      const response = await axios.get("http://localhost:3000/customer");
 
-      console.log('Fetched data:', response.data);
+      console.log("Fetched data:", response.data);
       setData(response.data);
       setError(null); // Clear any previous errors
+      setIsLoading(false);
     } catch (error) {
-      setError('Failed to load data. Please try again later.');
-      console.error('Error making GET request:', error);
+      setError("Failed to load data. Please try again later.");
+      console.error("Error making GET request:", error);
     } finally {
       setIsLoading(false); // Stop loading indicator
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   if (isLoading) {
     return (
@@ -57,12 +63,12 @@ export default function Customer({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
-      <View >
+      <View>
         <View style={styles.firstRow}>
           <Text style={styles.title}>Customer List</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('AddCustomer')}
+            onPress={() => navigation.navigate("AddCustomer")}
           >
             <Text style={styles.buttonText}>+</Text>
           </TouchableOpacity>
@@ -89,60 +95,60 @@ export default function Customer({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: "#f8f9fa",
     padding: 10,
   },
   button: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 50,
     height: 35,
     width: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
-  buttonText: { color: 'white', fontWeight: 'bold', textAlign: 'center' },
+  buttonText: { color: "white", fontWeight: "bold", textAlign: "center" },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   firstRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 10,
   },
   border: {
     padding: 15,
     marginBottom: 10,
     borderRadius: 8,
-    backgroundColor: '#ffffff',
-    shadowColor: '#000',
+    backgroundColor: "#ffffff",
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
-  rowTitle: { fontWeight: 'bold', fontSize: 16 },
+  rowTitle: { fontWeight: "bold", fontSize: 16 },
   rowText: { fontSize: 14, marginTop: 5 },
   centered: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     fontSize: 16,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   retryButton: {
     padding: 10,
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 10,
   },
   retryText: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
