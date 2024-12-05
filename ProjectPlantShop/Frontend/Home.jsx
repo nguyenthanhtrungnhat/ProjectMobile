@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   ActivityIndicator,
+  Button,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -30,6 +31,15 @@ export default function Home({ navigation }) {
       setError("Failed to load data. Please try again later.");
       setLoading(false);
       console.error("Error making GET request:", error);
+    }
+  };
+
+  const deleteProduct = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/products/${id}`);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting product:", error);
     }
   };
 
@@ -75,26 +85,32 @@ export default function Home({ navigation }) {
           item.id ? item.id.toString() : Math.random().toString()
         }
         renderItem={({ item }) => (
-          <View>
-            <TouchableOpacity
-              style={styles.row}
-              onPress={() => navigation.navigate("ProductDetail", { item })}
-            >
-              {/* Display product image if available */}
-              {item.imageUrl ? (
-                <Image
-                  source={{ uri: item.imageUrl }}
-                  style={styles.productImage}
-                />
-              ) : (
-                <View style={styles.noImage}>
-                  <Text>No Image</Text>
-                </View>
-              )}
+          <View style={styles.row}>
+            <View style={styles.rowHeader}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  deleteProduct(item.id);
+                }}
+              >
+                <Text style={styles.deleteButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
 
-              <Text style={styles.rowText}>{item.name}</Text>
-              <Text style={styles.SubText}>${item.price}</Text>
-            </TouchableOpacity>
+            {/* Display product image if available */}
+            {item.imageUrl ? (
+              <Image
+                source={{ uri: item.imageUrl }}
+                style={styles.productImage}
+              />
+            ) : (
+              <View style={styles.noImage}>
+                <Text>No Image</Text>
+              </View>
+            )}
+
+            <Text style={styles.rowText}>{item.name}</Text>
+            <Text style={styles.SubText}>${item.price}</Text>
           </View>
         )}
       />
@@ -164,5 +180,23 @@ const styles = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginTop: 20,
+  },
+  rowHeader: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginBottom: 5,
+  },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+    borderRadius: 50,
+    height: 30,
+    width: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
