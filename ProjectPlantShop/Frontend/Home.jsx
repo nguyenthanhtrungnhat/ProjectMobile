@@ -85,7 +85,10 @@ export default function Home({ navigation }) {
           item.id ? item.id.toString() : Math.random().toString()
         }
         renderItem={({ item }) => (
-          <View style={styles.row}>
+          <TouchableOpacity
+            style={styles.row}
+            onPress={() => navigation.navigate("ProductDetail", { item })}
+          >
             <View style={styles.rowHeader}>
               <TouchableOpacity
                 style={styles.deleteButton}
@@ -111,7 +114,7 @@ export default function Home({ navigation }) {
 
             <Text style={styles.rowText}>{item.name}</Text>
             <Text style={styles.SubText}>${item.price}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </ScrollView>
