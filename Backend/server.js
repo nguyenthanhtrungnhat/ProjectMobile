@@ -95,6 +95,22 @@ app.get('/products', (req, res) => {
         res.json(results);
     });
 });
+
+//Delete product by id
+app.delete('/products/:id', (req, res) => {
+    const productId = req.params.id;
+    const sql = 'DELETE FROM products WHERE id = ?';
+    db.query(sql, [productId], (err, results) => {
+        if (err) {
+            console.error('Error executing query: ', err);
+            res.status(500).send('Error deleting product');
+            return;
+        }
+        res.status(200).send({ message: 'Product deleted successfully' });
+    });
+});
+
+
 // Endpoint to get all cusotmer
 app.get('/customer', (req, res) => {
     const sql = 'SELECT * FROM customer';
@@ -109,6 +125,20 @@ app.get('/customer', (req, res) => {
 
         // Send the query results as JSON response
         res.json(results);
+    });
+});
+
+//Delete customer by id
+app.delete('/customer/:id', (req, res) => {
+    const customerId = req.params.id;
+    const sql = 'DELETE FROM customer WHERE id = ?';
+    db.query(sql, [customerId], (err, results) => {
+        if (err) {
+            console.error('Error executing query: ', err);
+            res.status(500).send('Error deleting customer');
+            return;
+        }
+        res.status(200).send({ message: 'Customer deleted successfully' });
     });
 });
 
