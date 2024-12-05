@@ -3,7 +3,10 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator, TransitionPresets } from "@react-navigation/stack";
+import {
+  createStackNavigator,
+  TransitionPresets,
+} from "@react-navigation/stack";
 
 import Login from "@/Frontend/login";
 import Home from "@/Frontend/Home";
@@ -167,7 +170,9 @@ export default function App() {
 
   return (
     <MenuProvider>
-      <SafeAreaView style={[styles.container, { backgroundColor: greenTheme.background }]}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: greenTheme.background }]}
+      >
         {isLoggedIn ? (
           <MyTab onLogoutSuccess={handleLogoutSuccess} />
         ) : (

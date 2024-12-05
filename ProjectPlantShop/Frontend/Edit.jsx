@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -7,38 +7,37 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
-} from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "react-native";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Correct API URL with dynamic item.id
-const API_URL = 'http://localhost:3000/products';
-
+const API_URL = "http://localhost:3000/products";
 
 export default function Edit({ route, navigation }) {
   const { item } = route.params; // Item data passed from the previous screen
   const [serviceName, setServiceName] = useState(item.name);
   const [price, setPrice] = useState(String(item.price)); // Ensure price is treated as a string
-  const [imageUrl, setImageUrl] = useState(item.imageUrl || ''); // Set initial imageUrl from product or empty
+  const [imageUrl, setImageUrl] = useState(item.imageUrl || ""); // Set initial imageUrl from product or empty
   const [loading, setLoading] = useState(false);
 
   const updateData = async () => {
     if (!serviceName || !price) {
-      Alert.alert('Validation Error', 'Both name and price are required.');
+      Alert.alert("Validation Error", "Both name and price are required.");
       return;
     }
 
     if (isNaN(price)) {
-      Alert.alert('Validation Error', 'Please enter a valid price.');
+      Alert.alert("Validation Error", "Please enter a valid price.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const token = await AsyncStorage.getItem('authToken');
+      const token = await AsyncStorage.getItem("authToken");
       if (!token) {
-        Alert.alert('Error', 'No authentication token found.');
+        Alert.alert("Error", "No authentication token found.");
         setLoading(false);
         return;
       }
@@ -60,12 +59,12 @@ export default function Edit({ route, navigation }) {
         }
       );
 
-      console.log('Update Response:', response.data);
-      Alert.alert('Success', 'Product updated successfully');
+      console.log("Update Response:", response.data);
+      Alert.alert("Success", "Product updated successfully");
       navigation.goBack(); // Go back after update
     } catch (error) {
-      console.error('Update error:', error);
-      Alert.alert('Error', 'Failed to update product');
+      console.error("Update error:", error);
+      Alert.alert("Error", "Failed to update product");
     } finally {
       setLoading(false);
     }
@@ -115,18 +114,18 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 20,
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 10,
     margin: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 20,
     marginTop: 20,
   },

@@ -6,32 +6,31 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-} from 'react-native';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "react-native";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const API_URL = 'http://localhost:3000/customer';
+const API_URL = "http://localhost:3000/customer";
 
 export default function AddCustomer({ navigation }) {
-  
-  const [customerName, setCustomerName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [authToken, setAuthToken] = useState('');
+  const [customerName, setCustomerName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [authToken, setAuthToken] = useState("");
 
   // Fetch token from AsyncStorage when component mounts
   useEffect(() => {
     const fetchAuthToken = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
+        const token = await AsyncStorage.getItem("authToken");
         if (token) {
           setAuthToken(token);
         } else {
-          Alert.alert('Authentication Error', 'No authentication token found.');
-          navigation.navigate('Login'); // Navigate to login if token is missing
+          Alert.alert("Authentication Error", "No authentication token found.");
+          navigation.navigate("Login"); // Navigate to login if token is missing
         }
       } catch (error) {
-        console.error('Error fetching auth token:', error);
+        console.error("Error fetching auth token:", error);
       }
     };
     fetchAuthToken();
@@ -50,13 +49,13 @@ export default function AddCustomer({ navigation }) {
         },
       });
 
-      console.log('POST Response:', response.data);
-      
-      setCustomerName('');
-      setPhone('');
+      console.log("POST Response:", response.data);
+
+      setCustomerName("");
+      setPhone("");
     } catch (error) {
-      console.error('Error posting data:', error);
-      Alert.alert('Error', 'Could not add customer. Please try again.');
+      console.error("Error posting data:", error);
+      Alert.alert("Error", "Could not add customer. Please try again.");
     }
   };
 
@@ -93,18 +92,18 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 20,
-    backgroundColor: 'green',
+    backgroundColor: "green",
     borderRadius: 10,
     margin: 20,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 20,
     marginTop: 20,
   },
