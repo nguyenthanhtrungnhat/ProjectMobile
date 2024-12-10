@@ -323,6 +323,59 @@ app.get("/transactions/:id", (req, res) => {
     res.json(results);
   });
 });
+// Endpoint to add a new transaction
+app.post('/transactions', (req, res) => {
+  const { customerId, products } = req.body; // products is an array of { productId, quantity }
+
+  // Validate input
+  if (!customerId || !Array.isArray(products) || products.length === 0) {
+    return res.status(400).json({ error: 'Invalid input. Please provide customerId and products.' });
+  }
+
+  // Start transaction
+  db.beginTransaction((err) => {
+    if (err) {
+      console.error('Error starting transaction:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    // Insert the new transaction
+    const transactionQuery = 'INSERT INTO transaction (customerId) VALUES (?)';
+    db.query(transactionQuery, [customerId], (err, result) => {
+      if (err) {
+        console.error('Error inserting transaction:', err);
+        return db.rollback(() => res.status(500).json({ error: 'Failed to create transaction' }));
+      }
+
+      const transactionId = result.insertId;
+
+      // Prepare the transaction_product entries
+      const transactionProductValues = products.map((product) => [transactionId, product.productId, product.quantity]);
+      const transactionProductQuery = 'INSERT INTO transaction_product (transactionId, productId, quantity) VALUES ?';
+
+      // Insert transaction products
+      db.query(transactionProductQuery, [transactionProductValues], (err) => {
+        if (err) {
+          console.error('Error inserting transaction products:', err);
+          return db.rollback(() => res.status(500).json({ error: 'Failed to add products to transaction' }));
+        }
+
+        // Commit the transaction
+        db.commit((err) => {
+          if (err) {
+            console.error('Error committing transaction:', err);
+            return db.rollback(() => res.status(500).json({ error: 'Transaction failed' }));
+          }
+
+          res.status(201).json({
+            message: 'Transaction added successfully',
+            transactionId,
+          });
+        });
+      });
+    });
+  });
+});
 
 // Start the server
 app.listen(3000, () => {
