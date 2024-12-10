@@ -40,7 +40,7 @@ export default function Customer({ navigation }) {
       await axios.delete(`http://localhost:3000/customer/${id}`);
       fetchData();
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error deleting customer:", error);
     }
   };
 

@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 const db = mysql.createConnection({
   host: "localhost",
   user: "root", // Replace with your MySQL username
-  password: "nhat123A@", // Replace with your MySQL password
+  password: "admin", // Replace with your MySQL password
   database: "mobileproject",
 });
 
@@ -191,12 +191,10 @@ app.post("/products", (req, res) => {
     }
 
     // Send a success response with the newly created product's ID
-    res
-      .status(201)
-      .send({
-        message: "Product added successfully",
-        productId: result.insertId,
-      });
+    res.status(201).send({
+      message: "Product added successfully",
+      productId: result.insertId,
+    });
   });
 });
 
@@ -221,12 +219,10 @@ app.post("/customer", (req, res) => {
     }
 
     // Send a success response with the newly created product's ID
-    res
-      .status(201)
-      .send({
-        message: "Customer added successfully",
-        customerId: result.insertId,
-      });
+    res.status(201).send({
+      message: "Customer added successfully",
+      customerId: result.insertId,
+    });
   });
 });
 // Endpoint to edit a product's name, price, and imageUrl by id
@@ -324,56 +320,90 @@ app.get("/transactions/:id", (req, res) => {
   });
 });
 // Endpoint to add a new transaction
-app.post('/transactions', (req, res) => {
+app.post("/transactions", (req, res) => {
   const { customerId, products } = req.body; // products is an array of { productId, quantity }
 
   // Validate input
   if (!customerId || !Array.isArray(products) || products.length === 0) {
-    return res.status(400).json({ error: 'Invalid input. Please provide customerId and products.' });
+    return res.status(400).json({
+      error: "Invalid input. Please provide customerId and products.",
+    });
   }
 
   // Start transaction
   db.beginTransaction((err) => {
     if (err) {
-      console.error('Error starting transaction:', err);
-      return res.status(500).json({ error: 'Internal server error' });
+      console.error("Error starting transaction:", err);
+      return res.status(500).json({ error: "Internal server error" });
     }
 
     // Insert the new transaction
-    const transactionQuery = 'INSERT INTO transaction (customerId) VALUES (?)';
+    const transactionQuery = "INSERT INTO transaction (customerId) VALUES (?)";
     db.query(transactionQuery, [customerId], (err, result) => {
       if (err) {
-        console.error('Error inserting transaction:', err);
-        return db.rollback(() => res.status(500).json({ error: 'Failed to create transaction' }));
+        console.error("Error inserting transaction:", err);
+        return db.rollback(() =>
+          res.status(500).json({ error: "Failed to create transaction" })
+        );
       }
 
       const transactionId = result.insertId;
 
       // Prepare the transaction_product entries
-      const transactionProductValues = products.map((product) => [transactionId, product.productId, product.quantity]);
-      const transactionProductQuery = 'INSERT INTO transaction_product (transactionId, productId, quantity) VALUES ?';
+      const transactionProductValues = products.map((product) => [
+        transactionId,
+        product.productId,
+        product.quantity,
+      ]);
+      const transactionProductQuery =
+        "INSERT INTO transaction_product (transactionId, productId, quantity) VALUES ?";
 
       // Insert transaction products
       db.query(transactionProductQuery, [transactionProductValues], (err) => {
         if (err) {
-          console.error('Error inserting transaction products:', err);
-          return db.rollback(() => res.status(500).json({ error: 'Failed to add products to transaction' }));
+          console.error("Error inserting transaction products:", err);
+          return db.rollback(() =>
+            res
+              .status(500)
+              .json({ error: "Failed to add products to transaction" })
+          );
         }
 
         // Commit the transaction
         db.commit((err) => {
           if (err) {
-            console.error('Error committing transaction:', err);
-            return db.rollback(() => res.status(500).json({ error: 'Transaction failed' }));
+            console.error("Error committing transaction:", err);
+            return db.rollback(() =>
+              res.status(500).json({ error: "Transaction failed" })
+            );
           }
 
           res.status(201).json({
-            message: 'Transaction added successfully',
+            message: "Transaction added successfully",
             transactionId,
           });
         });
       });
     });
+  });
+});
+
+// Endpoint to delete a transaction by ID
+app.delete("/transactions/:id", (req, res) => {
+  const transactionId = req.params.id;
+
+  const deleteTransactionQuery = "DELETE FROM transaction WHERE id = ?";
+  db.query(deleteTransactionQuery, [transactionId], (err, result) => {
+    if (err) {
+      console.error("Error deleting transaction:", err);
+      return res.status(500).json({ error: "Failed to delete transaction" });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Transaction not found" });
+    }
+
+    res.json({ message: "Transaction deleted successfully" });
   });
 });
 

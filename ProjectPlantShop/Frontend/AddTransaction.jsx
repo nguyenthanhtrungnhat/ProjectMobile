@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ScrollView
+  ScrollView,
+  Modal,
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,6 +18,7 @@ export default function AddTransactionScreen({ navigation }) {
   const [customerId, setCustomerId] = useState("");
   const [products, setProducts] = useState([{ productId: "", quantity: "" }]);
   const [authToken, setAuthToken] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Fetch authentication token
   useEffect(() => {
@@ -46,7 +48,10 @@ export default function AddTransactionScreen({ navigation }) {
   };
 
   const handleSubmit = async () => {
-    if (!customerId || products.some((product) => !product.productId || !product.quantity)) {
+    if (
+      !customerId ||
+      products.some((product) => !product.productId || !product.quantity)
+    ) {
       Alert.alert("Validation Error", "All fields are required.");
       return;
     }
@@ -67,8 +72,9 @@ export default function AddTransactionScreen({ navigation }) {
       });
 
       console.log("Transaction added:", response.data);
-      Alert.alert("Success", "Transaction added successfully!");
-      navigation.goBack(); // Navigate back to the previous screen
+      setModalVisible(true);
+      setCustomerId("");
+      setProducts([{ productId: "", quantity: "" }]);
     } catch (error) {
       console.error("Error adding transaction:", error);
       Alert.alert("Error", "Failed to add transaction. Please try again.");
@@ -77,6 +83,24 @@ export default function AddTransactionScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Customer added successfully!</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
       <Text style={styles.title}>Add Transaction</Text>
 
       <Text style={styles.label}>Customer ID</Text>
@@ -95,7 +119,9 @@ export default function AddTransactionScreen({ navigation }) {
             style={styles.input}
             placeholder="Enter product ID"
             value={product.productId}
-            onChangeText={(value) => handleProductChange(index, "productId", value)}
+            onChangeText={(value) =>
+              handleProductChange(index, "productId", value)
+            }
             keyboardType="numeric"
           />
 
@@ -104,13 +130,18 @@ export default function AddTransactionScreen({ navigation }) {
             style={styles.input}
             placeholder="Enter quantity"
             value={product.quantity}
-            onChangeText={(value) => handleProductChange(index, "quantity", value)}
+            onChangeText={(value) =>
+              handleProductChange(index, "quantity", value)
+            }
             keyboardType="numeric"
           />
         </View>
       ))}
 
-      <TouchableOpacity style={styles.addProductButton} onPress={handleAddProduct}>
+      <TouchableOpacity
+        style={styles.addProductButton}
+        onPress={handleAddProduct}
+      >
         <Text style={styles.addProductButtonText}>Add Another Product</Text>
       </TouchableOpacity>
 
@@ -127,12 +158,42 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "#f8f9fa",
   },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   title: {
     fontWeight: "bold",
     fontSize: 20,
     marginBottom: 15,
     textAlign: "center",
     color: "#333",
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalButton: {
+    padding: 15,
+    backgroundColor: "blue",
+    borderRadius: 10,
+    alignItems: "center",
   },
   label: {
     fontWeight: "bold",

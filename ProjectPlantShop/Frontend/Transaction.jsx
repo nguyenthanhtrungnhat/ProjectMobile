@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 export default function Transaction({ navigation }) {
@@ -16,7 +17,7 @@ export default function Transaction({ navigation }) {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/transactions"); // Replace with server IP
+      const response = await axios.get("http://localhost:3000/transactions");
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -26,15 +27,36 @@ export default function Transaction({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const deleteTransaction = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/transactions/${id}`);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting transactions:", error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
 
   const renderTransaction = ({ item }) => (
     <TouchableOpacity
       style={styles.transaction}
       onPress={() => navigation.navigate("TransactionDetail", { item })}
     >
+      <View style={styles.rowHeader}>
+        <TouchableOpacity
+          style={styles.deleteButton}
+          onPress={() => {
+            deleteTransaction(item.transactionId);
+          }}
+        >
+          <Text style={styles.deleteButtonText}>✕</Text>
+        </TouchableOpacity>
+      </View>
       <Text style={styles.transactionText}>
         Bill code: {item.transactionId} - Create at:{" "}
         {new Date(item.createAt).toLocaleDateString()}
@@ -85,6 +107,11 @@ const styles = StyleSheet.create({
     backgroundColor: "#f8f9fa",
     padding: 10,
   },
+  rowHeader: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginBottom: 5,
+  },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -133,5 +160,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+    borderRadius: 50,
+    height: 30,
+    width: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
