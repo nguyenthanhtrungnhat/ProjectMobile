@@ -102,6 +102,7 @@ export default function Customer({ navigation }) {
               </TouchableOpacity>
             </View>
             <Text style={styles.rowTitle}>Customer Name: {item.name}</Text>
+            <Text style={styles.rowText}>Customer ID: {item.id}</Text>
             <Text style={styles.rowText}>Phone: {item.phone}</Text>
             <Text style={styles.rowText}>Total Money: ${item.totalSpent}</Text>
           </View>
