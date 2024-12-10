@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView
 } from "react-native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -75,7 +76,7 @@ export default function AddTransactionScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Add Transaction</Text>
 
       <Text style={styles.label}>Customer ID</Text>
@@ -116,7 +117,7 @@ export default function AddTransactionScreen({ navigation }) {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Add Transaction</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
