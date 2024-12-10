@@ -35,6 +35,15 @@ export default function Customer({ navigation }) {
     }
   };
 
+  const deleteCustomer = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/customer/${id}`);
+      fetchData();
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchData();
@@ -82,6 +91,16 @@ export default function Customer({ navigation }) {
         }
         renderItem={({ item }) => (
           <View style={styles.border}>
+            <View style={styles.rowHeader}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => {
+                  deleteCustomer(item.id);
+                }}
+              >
+                <Text style={styles.deleteButtonText}>✕</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.rowTitle}>Customer Name: {item.name}</Text>
             <Text style={styles.rowText}>Phone: {item.phone}</Text>
             <Text style={styles.rowText}>Total Money: ${item.totalSpent}</Text>
@@ -118,6 +137,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
   },
+  rowHeader: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginBottom: 5,
+  },
   border: {
     padding: 15,
     marginBottom: 10,
@@ -141,6 +165,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
+  deleteButton: {
+    backgroundColor: "#ff4d4d",
+    borderRadius: 50,
+    height: 30,
+    width: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   retryButton: {
     padding: 10,
     backgroundColor: "green",
@@ -150,5 +182,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

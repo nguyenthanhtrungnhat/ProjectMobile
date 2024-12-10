@@ -1,11 +1,11 @@
 import {
   Text,
-  SafeAreaView,
   StyleSheet,
   View,
   TextInput,
   TouchableOpacity,
   Alert,
+  Modal,
 } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -14,6 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const API_URL = "http://localhost:3000/customer";
 
 export default function AddCustomer({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [phone, setPhone] = useState("");
   const [authToken, setAuthToken] = useState("");
@@ -50,9 +51,10 @@ export default function AddCustomer({ navigation }) {
       });
 
       console.log("POST Response:", response.data);
-
       setCustomerName("");
       setPhone("");
+
+      setModalVisible(true);
     } catch (error) {
       console.error("Error posting data:", error);
       Alert.alert("Error", "Could not add customer. Please try again.");
@@ -60,7 +62,28 @@ export default function AddCustomer({ navigation }) {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
+      {/* Modal Component */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Customer added successfully!</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setModalVisible(false)}
+            >
+              <Text style={styles.buttonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Input Fields */}
       <Text style={styles.title}> Customer name *</Text>
       <TextInput
         placeholder="Input a customer name"
@@ -76,6 +99,8 @@ export default function AddCustomer({ navigation }) {
         value={phone}
         onChangeText={setPhone}
       />
+
+      {/* Submit Button */}
       <TouchableOpacity style={styles.button} onPress={postData}>
         <Text style={styles.buttonText}> Add</Text>
       </TouchableOpacity>
@@ -84,27 +109,62 @@ export default function AddCustomer({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  inputField: {
-    margin: 20,
+  container: {
+    flex: 1,
     padding: 20,
+    backgroundColor: "#fff",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  inputField: {
+    marginVertical: 10,
+    padding: 15,
     borderRadius: 10,
     borderWidth: 1,
+    borderColor: "#ccc",
   },
   button: {
-    padding: 20,
+    padding: 15,
     backgroundColor: "green",
     borderRadius: 10,
-    margin: 20,
+    marginTop: 20,
+    alignItems: "center",
   },
   buttonText: {
     color: "white",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    textAlign: "center",
   },
   title: {
     fontWeight: "bold",
-    marginLeft: 20,
-    marginTop: 20,
+    marginVertical: 10,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  modalButton: {
+    padding: 15,
+    backgroundColor: "blue",
+    borderRadius: 10,
+    alignItems: "center",
   },
 });
