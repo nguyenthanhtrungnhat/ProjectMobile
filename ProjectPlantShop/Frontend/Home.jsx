@@ -114,6 +114,7 @@ export default function Home({ navigation }) {
 
             <Text style={styles.rowText}>{item.name}</Text>
             <Text style={styles.SubText}>${item.price}</Text>
+            <Text style={styles.SubText}>Product ID: {item.id}</Text>
           </TouchableOpacity>
         )}
       />
